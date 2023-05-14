@@ -13,6 +13,7 @@ public class User {
     @NotNull
     private int id;
     @Email
+    @NotBlank
     private String email;
     @NotBlank
     private String login;
