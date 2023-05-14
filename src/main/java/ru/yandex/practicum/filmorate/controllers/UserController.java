@@ -14,10 +14,16 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private HashMap<Integer, User> users = new HashMap<>();
+    private int id = 1;
+
+    private int generateId() {
+        return id++;
+    }
 
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
         log.info("add user");
+        user.setId(generateId());
         users.put(user.getId(), user);
         return user;
     }
