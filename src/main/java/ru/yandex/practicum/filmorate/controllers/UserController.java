@@ -30,6 +30,7 @@ public class UserController {
         validateUser(user);
         user.setId(generateId());
         users.put(user.getId(), user);
+        log.info("Пользователь сохранен.");
         return user;
     }
 
@@ -37,12 +38,11 @@ public class UserController {
     public User updateUser(@Valid @RequestBody User user) {
         log.info("update user");
         validateUser(user);
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else {
-            log.debug("Key not found {}", user.getId());
-            throw new ValidationException("Пользователь не найден");
+        if (!users.containsKey(user.getId())) {
+            throw new ValidationException("Пользователь не найден.");
         }
+        users.put(user.getId(), user);
+        log.info("Данные пользователя с ID " + user.getId() + " обновлены.");
         return user;
 
 
