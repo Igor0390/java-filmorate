@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/User")
 public class UserController {
     private HashMap<Integer, User> users = new HashMap<>();
-    
+
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
         log.info("add user");
