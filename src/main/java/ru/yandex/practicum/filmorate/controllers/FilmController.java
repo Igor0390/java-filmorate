@@ -17,13 +17,19 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
     private static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
+    private int id = 1;
     private final Map<Integer, Film> films = new HashMap<>();
+
+    private int generateId() {
+        return id++;
+    }
 
 
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         validate(film);
         log.info("add film");
+        film.setId(generateId());
         films.put(film.getId(), film);
         return film;
     }

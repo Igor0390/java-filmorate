@@ -18,8 +18,7 @@ public class User {
     @NonNull
     @NotBlank
     private String login;
-    @NonNull
-    @NotBlank
+
     private String name;
     @NonNull
     @Past
