@@ -20,7 +20,7 @@ class UserControllerTest {
     @BeforeEach
     public void beforeEach() {
         user = new User("email1@gmail.com", "Login1", "Name1", LocalDate.of(1994, 11, 02));
-        user2 = new User( "email2@gmail.com", "Login2", "Name2", LocalDate.of(1994, 11, 02));
+        user2 = new User("email2@gmail.com", "Login2", "Name2", LocalDate.of(1994, 11, 02));
         userController.getAllUsers().clear();
     }
 
