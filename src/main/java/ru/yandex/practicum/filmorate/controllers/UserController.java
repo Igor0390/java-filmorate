@@ -8,11 +8,13 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/User")
 public class UserController {
     private HashMap<Integer, User> users = new HashMap<>();
+    
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
         log.info("add user");
