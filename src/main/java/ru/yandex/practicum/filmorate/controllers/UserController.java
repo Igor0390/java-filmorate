@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,12 +23,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(User user) {
-     return userStorage.addUser(user);
+    public User addUser(@Valid @RequestBody User user) {
+        return userStorage.addUser(user);
     }
 
     @PutMapping
-    public User updateUser(User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         return userStorage.updateUser(user);
     }
 
@@ -35,6 +36,7 @@ public class UserController {
     public List<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
+
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable int userId) {
         return userService.getUserById(userId);

@@ -23,7 +23,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User addUser(@Valid @RequestBody User user) {
+    public User addUser(User user) {
         log.info("add user");
         validateUser(user);
         user.setId(generateId());
@@ -33,7 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(@Valid @RequestBody User user) {
+    public User updateUser(User user) {
         log.info("update user");
         validateUser(user);
         if (!users.containsKey(user.getId())) {

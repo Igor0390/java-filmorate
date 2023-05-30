@@ -29,7 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     @Override
-    public Film addFilm(@Valid @RequestBody Film film) {
+    public Film addFilm(Film film) {
         validate(film);
         log.info("add film");
         film.setId(generateId());
@@ -38,7 +38,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Film updateFilm(Film film) {
         validate(film);
         if (!films.containsKey(film.getId())) {
             throw new ValidationException("Фильм не найден.");
