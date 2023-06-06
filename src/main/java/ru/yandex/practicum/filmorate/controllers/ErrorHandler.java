@@ -28,7 +28,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Throwable e) {
+    public ErrorResponse handleException(final Throwable e) {
         log.error("Неизвестная ошибка", e);
         return new ErrorResponse("Неизвестная ошибка");
     }
