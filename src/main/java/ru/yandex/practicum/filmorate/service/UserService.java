@@ -2,140 +2,64 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
-public class UserService extends AbstractService<User, UserStorage> {
-    public UserService(UserStorage storage) {
-        super(storage);
+public class UserService {
+    private final UserStorage userStorage;
+
+    public UserService(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
-    @Override
-    public User create(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
-        user = super.create(user);
-        log.info("Добавлен пользователь {}", user);
-
-        return user;
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
     }
 
-    @Override
-    public List<User> findAll() {
-        List<User> users = super.findAll();
-        users.forEach(storage::loadFriends);
-        return users;
-    }
-
-    @Override
-    public User findById(Long id) {
-        User user = super.findById(id);
-        storage.loadFriends(user);
-        return user;
-    }
-
-    //Шаблонный метод
-    @Override
-    public void validationBeforeCreate(User user) {
-        if (super.storage.containsEmail(user.getEmail())) {
-            String message = ("Пользователь с электронной почтой " +
-                    user.getEmail() + " уже зарегистрирован.");
-            log.warn(message);
-            throw new UserAlreadyExistException(message);
-        }
-    }
-
-    public void addFriend(Long id, Long friendId) {
-        User user = this.findById(id);
-        User friend = this.findById(friendId);
-        if (user == null || friend == null) {
-            String message = ("Пользователь не найден");
-            log.warn(message);
-            throw new NotFoundException(message);
-        }
-        if (user.containsFriend(friendId)) {
-            log.warn("Друг существует");
-            return;
-        }
+    public User addFriend(int userId, int friendId) {
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
         user.addFriend(friendId);
-
-        if (storage.containsFriendship(friendId, id, false)) {
-            //friendId уже добавил ранее в друзья
-            storage.updateFriendship(friendId, id, true, friendId, id);
-        } else if (!storage.containsFriendship(id, friendId, null)) {
-            //Односторонняя связь, не было дружбы
-            storage.insertFriendship(id, friendId);
-        }
+        friend.addFriend(userId);
+        log.info("Пользователь " + user.getName() + " добавлен в список друзей " + friend.getName());
+        return user;
     }
 
-    public void removeFriend(Long id, Long friendId) {
-        User user = this.findById(id);
-        User friend = this.findById(friendId);
-        if (user == null || friend == null) {
-            String message = ("Пользователь не найден");
-            log.warn(message);
-            throw new NotFoundException(message);
-        }
-        if (!user.containsFriend(friendId)) {
-            log.warn("Друг не существует");
-            return;
-        }
+    public User deleteFriend(int userId, int friendId) {
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
         user.deleteFriend(friendId);
-
-        if (storage.containsFriendship(id, friendId, false)) {
-            //Односторонняя связь. friendId не одобрял
-            storage.removeFriendship(id, friendId);
-        } else if (storage.containsFriendship(id, friendId, true)) {
-            //Совместная связь
-            storage.updateFriendship(friendId, id, false, id, friendId);
-        } else if (storage.containsFriendship(friendId, id, true)) {
-            //Совместная связь. friendId первый добавил
-            storage.updateFriendship(friendId, id, false, friendId, id);
-        }
+        friend.deleteFriend(userId);
+        log.info("Пользователь " + user.getName() + " удален из списка друзей " + friend.getName());
+        return user;
     }
 
-    public List<User> getFriends(Long id) {
-        User user = this.findById(id);
-        if (user == null) {
-            String message = ("Пользователь не найден");
-            log.warn(message);
-            throw new NotFoundException(message);
+    public List<User> getFriends(int userId) {
+        User user = userStorage.getUserById(userId);
+        List<User> friendsList = new ArrayList<>();
+        for (Integer id : user.getFriends()) {
+            friendsList.add(userStorage.getUserById(id));
         }
-        List<Long> friendsId = user.getFriends();
-        List<User> friends = new ArrayList<>();
-        for (var friendId : friendsId) {
-            friends.add(this.findById(friendId));
-        }
-
-        return friends;
+        log.info("Список друзей пользователя " + user.getName());
+        return friendsList;
     }
 
-    public List<User> getCommonFriends(Long id1, long id2) {
-        User user1 = this.findById(id1);
-        User user2 = this.findById(id2);
-        if (user1 == null || user2 == null) {
-            String message = ("Пользователь не найден");
-            log.warn(message);
-            throw new NotFoundException(message);
+    public List<User> corporateFriends(int userId, int friendId) {
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
+        List<User> mutualFriends = new ArrayList<>();
+        for (Integer id : user.getFriends()) {
+            if (friend.getFriends().contains(id)) {
+                User mutualFriend = userStorage.getUserById((id));
+                mutualFriends.add(mutualFriend);
+            }
         }
-        List<Long> friendsId1 = user1.getFriends();
-        List<Long> friendsId2 = user2.getFriends();
-        friendsId1.retainAll(friendsId2);
-
-        List<User> friends = new ArrayList<>();
-        for (var friendId : friendsId1) {
-            friends.add(this.findById(friendId));
-        }
-
-        return friends;
+        log.info("Список общих друзей пользователей");
+        return mutualFriends;
     }
 }
