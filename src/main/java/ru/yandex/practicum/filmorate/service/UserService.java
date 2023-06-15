@@ -41,7 +41,7 @@ public class UserService {
         if (user == null || friend == null) {
             String message = ("Пользователь не найден");
             log.warn(message);
-            throw  new NotFoundException(message);
+            throw new NotFoundException(message);
         }
         if (user.containsFriend(friendId)) {
             log.warn("Друг существует");
@@ -50,10 +50,8 @@ public class UserService {
         user.addFriend(friendId);
 
         if (userStorage.containsFriendship(friendId, userId, false)) {
-            //friendId уже добавил ранее в друзья
             userStorage.updateFriendship(friendId, userId, true, friendId, userId);
-        } else if (!userStorage.containsFriendship(userId, friendId, null)){
-            //Односторонняя связь, не было дружбы
+        } else if (!userStorage.containsFriendship(userId, friendId, null)) {
             userStorage.insertFriendship(userId, friendId);
         }
     }
