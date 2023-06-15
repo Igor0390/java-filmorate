@@ -1,53 +1,48 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Getter
+@Setter
 @RequiredArgsConstructor
-@Data
-public class Film {
-    @NonNull
-    @NotNull
-    private long id;
-    @NonNull
+@ToString
+public class Film extends AbstractEntity {
     @NotBlank
     private String name;
-    @NonNull
     @NotBlank
+    @Size(max = 200)
     private String description;
-    @NonNull
-    @NotNull
     private LocalDate releaseDate;
-    @NonNull
-    @NotNull
-    @Positive
+    @Min(1)
     private int duration;
+    private Rating mpa;
+    private Set<Genre> genres;
 
-    private Mpa mpa;
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+    private final Set<Long> likes = new HashSet<>();
 
-    private Set<Long> likes = new HashSet<>();
-
-    private int likesCounter;
-
-    public Film() {
+    public void addLike(Long userId) {
+        likes.add(userId);
     }
 
-
-    public void addLike(Long id) {
-        likes.add(id);
-        likesCounter++;
+    public void removeLike(Long userId) {
+        likes.remove(userId);
     }
 
-    public void deleteLike(Long id) {
-        likes.remove(id);
-        likesCounter--;
+    public int getLikesCount() {
+        return likes.size();
+    }
+
+    public Set<Long> getLikes() {
+        return new HashSet<>(likes);
     }
 }

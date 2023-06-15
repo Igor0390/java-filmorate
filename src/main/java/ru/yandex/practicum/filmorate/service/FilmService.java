@@ -1,70 +1,138 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.InvalidFilmException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+public class FilmService extends AbstractService<Film, FilmStorage> {
+    private final static String MSG_ERR_DATE = "Дата релиза не раньше 28 декабря 1895 года ";
+    private final static String MSG_ERR_MPA = "Не заполнен рейтинг MPA";
 
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
+    private final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
+    private final UserService userService;
+    private final GenreStorage genreStorage;
+
+    @Autowired
+    public FilmService(FilmStorage storage, UserService userService, GenreStorage genreStorage) {
+        super(storage);
+        this.userService = userService;
+        this.genreStorage = genreStorage;
     }
 
-    public Film addFilm(Film film) {
-        return filmStorage.addFilm(film);
+    @Override
+    public Film create(Film film) {
+        film = super.create(film);
+        storage.createGenresByFilm(film);
+        log.info("Добавлен фильма {}", film);
+        return film;
     }
 
-    public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+    @Override
+    public Film update(Film film) {
+        film = super.update(film);
+        storage.updateGenresByFilm(film);
+        log.info("Обновлён фильм {}", film);
+        return film;
     }
 
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
+    @Override
+    public List<Film> findAll() {
+        List<Film> films = super.findAll();
+        films.forEach(this::loadData);
+        return films;
     }
 
-    public Film getFilmById(long id) {
-        return filmStorage.getFilmById(id);
+    @Override
+    public Film findById(Long id) {
+        Film film = super.findById(id);
+        loadData(film);
+        return film;
     }
 
-    public Film addLike(long filmId, long userId) {
-        Film film = filmStorage.getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
+    private void loadData(Film film) {
+        film.setGenres(genreStorage.getGenresByFilm(film));
+        storage.loadLikes(film);
+    }
+
+    //Шаблонный метод
+    @Override
+    public void validationBeforeCreate(Film film) {
+        validateReleaseDate(film.getReleaseDate());
+        validateMpa(film.getMpa());
+    }
+
+    //Шаблонный метод
+    @Override
+    public void validationBeforeUpdate(Film film) {
+        super.validationBeforeUpdate(film);
+        validateReleaseDate(film.getReleaseDate());
+        validateMpa(film.getMpa());
+    }
+
+    private void validateReleaseDate(LocalDate date) {
+        if (date.isBefore(MIN_DATE)) {
+            log.warn(MSG_ERR_DATE + date);
+            throw new InvalidFilmException(MSG_ERR_DATE);
+        }
+    }
+
+    private void validateMpa(Rating mpa) {
+        if (mpa == null) {
+            log.warn(MSG_ERR_MPA);
+            throw new InvalidFilmException(MSG_ERR_MPA);
+        }
+    }
+
+    private void validateLike(Film film, User user) {
+        if (film == null) {
+            String message = ("Фильм не найден");
+            log.warn(message);
+            throw new NotFoundException(message);
+        }
+        if (user == null) {
+            String message = ("Пользователь не найден");
+            log.warn(message);
+            throw new NotFoundException(message);
+        }
+    }
+
+    public void addLike(Long id, Long userId) {
+        Film film = this.findById(id);
+        User user = userService.findById(userId);
+        validateLike(film, user);
         film.addLike(userId);
-        log.info("Пользователь " + user.getName() + " поставил лайк фильму " + film.getName());
-        return film;
+        storage.saveLikes(film);
     }
 
-    public Film deleteLike(long filmId, long userId) {
-        Film film = filmStorage.getFilmById(filmId);
-        User user = userStorage.getUserById(userId);
-        film.deleteLike(userId);
-        log.info("Пользователь " + user.getName() + " убрал лайк у фильма " + film.getName());
-        return film;
+    public void removeLike(Long id, Long userId) {
+        Film film = this.findById(id);
+        User user = userService.findById(userId);
+        validateLike(film, user);
+        film.removeLike(userId);
+        storage.saveLikes(film);
     }
 
-    public List<Film> getPopularFilms(Integer countFilms) {
-        Collection<Film> films = filmStorage.getAllFilms();
-        log.info("Список десяти самых популярных фильмов");
-        return films.stream()
-                .sorted(this::compare)
-                .limit(countFilms)
-                .collect(Collectors.toList());
-    }
+    public List<Film> findPopularMovies(int count) {
+        List<Film> films = this.findAll();
+        films.sort(Comparator.comparing(Film::getLikesCount).reversed());
+        if(count > films.size()) {
+            count = films.size();
+        }
 
-    private int compare(Film f0, Film f1) {
-        return -1 * Integer.compare(f0.getLikes().size(), f1.getLikes().size());
+        return new ArrayList<>(films.subList(0, count));
     }
-
 }

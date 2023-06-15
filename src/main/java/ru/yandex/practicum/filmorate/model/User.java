@@ -2,55 +2,47 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Getter
+@Setter
 @RequiredArgsConstructor
-@Data
-public class User {
-
-    @NotNull
-    private long id;
-    @NonNull
+@ToString
+public class User extends AbstractEntity {
+    @NotBlank
     @Email
-    @NotBlank
     private String email;
-    @NonNull
     @NotBlank
+    @Pattern(regexp="\\S+")
     private String login;
-
     private String name;
-    @NonNull
     @Past
-    @NotNull
     private LocalDate birthday;
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Set<Long> friends = new HashSet<>();
 
-    public User() {
-
-    }
-
+    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+    private final Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
         friends.add(id);
     }
 
-    public void deleteFriend(Long id) {
+    public void removeFriend(Long id) {
         friends.remove(id);
     }
 
-    public List<Long> getFriends() {
+    public List<Long> getFiends() {
         return new ArrayList<>(friends);
     }
 
-    public boolean containsFriend(Long id) {
+    public boolean containsFriend(Long id){
         return friends.contains(id);
     }
-
 }
