@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.db.MpaStorage;
 
 import java.util.List;
 
-
 @Slf4j
 @Service
 public class MpaService {
@@ -19,8 +18,9 @@ public class MpaService {
     public MpaService(MpaStorage storage) {
         this.storage = storage;
     }
+
     public Mpa getById(int id) {
-        if (id < 0 ) {
+        if (id < 0) {
             throw new NotFoundException("Неверно передан ID MPA.");
         }
         log.info("Получен рейтинг MPA с идентификатором " + id + ".");
