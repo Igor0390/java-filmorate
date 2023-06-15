@@ -40,8 +40,8 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
-    public User addFriend(@PathVariable("userId") int userId, @PathVariable("friendId") int friendId) {
-        return userService.addFriend(userId, friendId);
+    public void addFriend(@PathVariable("userId") int userId, @PathVariable("friendId") int friendId) {
+        userService.addFriend(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")

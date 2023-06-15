@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -34,13 +35,27 @@ public class UserService {
     }
 
 
-    public User addFriend(long userId, long friendId) {
+    public void addFriend(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
+        if (user == null || friend == null) {
+            String message = ("Пользователь не найден");
+            log.warn(message);
+            throw  new NotFoundException(message);
+        }
+        if (user.containsFriend(friendId)) {
+            log.warn("Друг существует");
+            return;
+        }
         user.addFriend(friendId);
-        friend.addFriend(userId);
-        log.info("Пользователь " + user.getName() + " добавлен в список друзей " + friend.getName());
-        return user;
+
+        if (userStorage.containsFriendship(friendId, userId, false)) {
+            //friendId уже добавил ранее в друзья
+            userStorage.updateFriendship(friendId, userId, true, friendId, userId);
+        } else if (!userStorage.containsFriendship(userId, friendId, null)){
+            //Односторонняя связь, не было дружбы
+            userStorage.insertFriendship(userId, friendId);
+        }
     }
 
     public User deleteFriend(long userId, long friendId) {

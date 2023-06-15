@@ -60,6 +60,21 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
+    @Override
+    public boolean containsFriendship(Long filterId1, Long filterId2, Boolean filterConfirmed) {
+        return false;
+    }
+
+    @Override
+    public void updateFriendship(Long id1, Long id2, boolean confirmed, Long filterId1, Long filterId2) {
+
+    }
+
+    @Override
+    public void insertFriendship(Long id, Long friendId) {
+
+    }
+
     public void validateUser(User user) {
 
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
