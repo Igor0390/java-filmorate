@@ -19,10 +19,10 @@ import java.util.List;
 @Service
 @Slf4j
 public class FilmService extends AbstractService<Film, FilmStorage> {
-    private final static String MSG_ERR_DATE = "Дата релиза не раньше 28 декабря 1895 года ";
-    private final static String MSG_ERR_MPA = "Не заполнен рейтинг MPA";
+    private final String MSGERRDATE = "Дата релиза не раньше 28 декабря 1895 года ";
+    private final String MSGERRMPA = "Не заполнен рейтинг MPA";
 
-    private final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
+    private final LocalDate MINDATE = LocalDate.of(1895, 12, 28);
     private final UserService userService;
     private final GenreStorage genreStorage;
 
@@ -84,16 +84,16 @@ public class FilmService extends AbstractService<Film, FilmStorage> {
     }
 
     private void validateReleaseDate(LocalDate date) {
-        if (date.isBefore(MIN_DATE)) {
-            log.warn(MSG_ERR_DATE + date);
-            throw new InvalidFilmException(MSG_ERR_DATE);
+        if (date.isBefore(MINDATE)) {
+            log.warn(MSGERRDATE + date);
+            throw new InvalidFilmException(MSGERRDATE);
         }
     }
 
     private void validateMpa(Rating mpa) {
         if (mpa == null) {
-            log.warn(MSG_ERR_MPA);
-            throw new InvalidFilmException(MSG_ERR_MPA);
+            log.warn(MSGERRMPA);
+            throw new InvalidFilmException(MSGERRMPA);
         }
     }
 
