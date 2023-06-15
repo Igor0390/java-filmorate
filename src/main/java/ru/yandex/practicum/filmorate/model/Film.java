@@ -1,47 +1,38 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import ru.yandex.practicum.filmorate.auxilary.IsAfter;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-@ToString
-public class Film extends AbstractEntity {
+
+import javax.validation.constraints.*;
+
+@Data
+@AllArgsConstructor
+@Builder
+public class Film {
+    @Builder.Default
+    private int id = 1;
     @NotBlank
     private String name;
+    private List<Genre> genres;
     @NotBlank
     @Size(max = 200)
     private String description;
+    @NotNull
+    @IsAfter(current = "1895-12-28")
     private LocalDate releaseDate;
-    @Min(1)
+    @NotNull
+    @Min(value = 0)
     private int duration;
-    private Rating mpa;
-    private Set<Genre> genres;
+    @NotNull
+    private FilmRating mpa;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private final Set<Long> likes = new HashSet<>();
-
-    public void addLike(Long userId) {
-        likes.add(userId);
-    }
-
-    public void removeLike(Long userId) {
-        likes.remove(userId);
-    }
-
-    public int getLikesCount() {
-        return likes.size();
-    }
-
-    public Set<Long> getLikes() {
-        return new HashSet<>(likes);
+    public void setMpa(FilmRating mpa) {
+        this.mpa = mpa;
     }
 }

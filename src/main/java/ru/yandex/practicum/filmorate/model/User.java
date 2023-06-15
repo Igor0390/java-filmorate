@@ -1,49 +1,30 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
-@ToString
-public class User extends AbstractEntity {
-    @NotBlank
+@Data
+@AllArgsConstructor
+@Builder
+public class User {
+    @Builder.Default
+    private int id = 1;
     @Email
+    @NotBlank
     private String email;
     @NotBlank
-    @Pattern(regexp = "\\S+")
     private String login;
+    @NotNull
     private String name;
     @Past
+    @NotNull
     private LocalDate birthday;
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private final Set<Long> friends = new HashSet<>();
-
-    public void addFriend(Long id) {
-        friends.add(id);
-    }
-
-    public void removeFriend(Long id) {
-        friends.remove(id);
-    }
-
-    public List<Long> getFiends() {
-        return new ArrayList<>(friends);
-    }
-
-    public boolean containsFriend(Long id) {
-        return friends.contains(id);
-    }
 }
