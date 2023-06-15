@@ -2,26 +2,30 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.FilmGenre;
-import ru.yandex.practicum.filmorate.service.GenreService;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.service.GenreDbService;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @Component
 @RequestMapping("/genres")
 public class GenreController {
-    private final GenreService genreService;
+    private final GenreDbService genreDbService;
 
     @GetMapping
-    public List<FilmGenre> getGenresList() {
-        return genreService.getGenresList();
+    public List<Genre> getGenresList() {
+        log.info("Get GenresList");
+        return genreDbService.getGenresList();
     }
 
     @GetMapping("/{id}")
-    public FilmGenre getGenreById(@PathVariable int id) {
-        return genreService.getGenreById(id);
+    public Genre getGenreById(@PathVariable int id) {
+        log.info("Get Genres by id");
+        return genreDbService.getGenreById(id);
     }
 }

@@ -19,7 +19,7 @@ public class Film {
     private int id = 1;
     @NotBlank
     private String name;
-    private List<FilmGenre> genres;
+    private List<Genre> genres;
     @NotBlank
     @Size(max = 200)
     private String description;

@@ -3,9 +3,9 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.dao.RatingDao;
+import ru.yandex.practicum.filmorate.dao.FilmStorage;
+import ru.yandex.practicum.filmorate.dao.GenreStorage;
+import ru.yandex.practicum.filmorate.dao.RatingStorage;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -14,25 +14,26 @@ import java.util.List;
 @Qualifier
 @RequiredArgsConstructor
 public class FilmDbService {
-    private final FilmDao filmDao;
-    private final RatingDao ratingDao;
-    private final GenreDao genreDao;
+    private final FilmStorage filmStorage;
+    private final RatingStorage ratingStorage;
+    private final GenreStorage genreStorage;
+
 
     public Film addFilm(Film film) {
-        film.setMpa(ratingDao.getRatingById(film.getMpa().getId()));
-        return filmDao.addFilm(film);
+        film.setMpa(ratingStorage.getRatingById(film.getMpa().getId()));
+        return filmStorage.addFilm(film);
     }
 
     public List<Film> getFilmsList(int max) {
-        return filmDao.getFilmsList(max);
+        return filmStorage.getFilmsList(max);
     }
 
     public Film getFilmById(int filmId) {
-        return filmDao.getFilmById(filmId);
+        return filmStorage.getFilmById(filmId);
     }
 
     public Film updateFilm(Film film) {
-        film.setMpa(ratingDao.getRatingById(film.getMpa().getId()));
-        return filmDao.updateFilm(film);
+        film.setMpa(ratingStorage.getRatingById(film.getMpa().getId()));
+        return filmStorage.updateFilm(film);
     }
 }

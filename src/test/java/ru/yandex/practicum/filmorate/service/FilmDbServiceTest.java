@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmGenre;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.FilmRating;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -26,12 +26,12 @@ public class FilmDbServiceTest {
     private Film film;
     private Film film2;
     private User user;
-    private FilmGenre genre;
+    private Genre genre;
     private FilmRating mpa;
 
     @BeforeEach
     void beforeEach() {
-        genre = new FilmGenre(1);
+        genre = new Genre(1);
         mpa = new FilmRating(1);
         film = new Film(1, "God Father", List.of(genre), "Film about father",
                 LocalDate.now(), 240, mpa);
