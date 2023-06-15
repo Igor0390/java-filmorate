@@ -32,7 +32,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film addFilm(Film film) {
         String sql = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION,RATING_ID)";
         GeneratedKeyHolder keyHolder;
-                keyHolder = new GeneratedKeyHolder();
+        keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"FILM_ID"});
             stmt.setString(1, film.getName());
@@ -42,8 +42,8 @@ public class FilmDbStorage implements FilmStorage {
             stmt.setLong(5, film.getMpa().getId());
             return stmt;
         }, keyHolder);
-         film.setId(keyHolder.getKey().longValue());
-         return film;
+        film.setId(keyHolder.getKey().longValue());
+        return film;
     }
 
 

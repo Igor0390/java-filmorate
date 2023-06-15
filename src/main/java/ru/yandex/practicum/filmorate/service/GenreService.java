@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.db.GenreStorage;
 
 import java.util.List;
+
 @Slf4j
 @Service
 public class GenreService {
@@ -17,7 +18,8 @@ public class GenreService {
     public GenreService(GenreStorage storage) {
         this.storage = storage;
     }
-    public Genre getById(int id) {
+
+    public Genre getById(long id) {
         if (id < 0) {
             throw new NotFoundException("Неверно передан ID Genre.");
         }

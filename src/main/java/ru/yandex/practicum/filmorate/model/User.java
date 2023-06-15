@@ -25,8 +25,10 @@ public class User {
     @Past
     @NotNull
     private LocalDate birthday;
+
     public User() {
     }
+
     private Set<Integer> friends = new HashSet<>();
 
     public void addFriend(Integer id) {
