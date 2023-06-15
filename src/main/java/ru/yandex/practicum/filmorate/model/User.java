@@ -21,13 +21,14 @@ public class User extends AbstractEntity {
     @Email
     private String email;
     @NotBlank
-    @Pattern(regexp="\\S+")
+    @Pattern(regexp = "\\S+")
     private String login;
     private String name;
     @Past
     private LocalDate birthday;
 
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private final Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long id) {
@@ -42,7 +43,7 @@ public class User extends AbstractEntity {
         return new ArrayList<>(friends);
     }
 
-    public boolean containsFriend(Long id){
+    public boolean containsFriend(Long id) {
         return friends.contains(id);
     }
 }
