@@ -19,8 +19,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class FilmService extends AbstractService<Film, FilmStorage> {
-    private final String MSGERRDATE = "Дата релиза не раньше 28 декабря 1895 года ";
-    private final String MSGERRMPA = "Не заполнен рейтинг MPA";
+    private final String dateRel = "Дата релиза не раньше 28 декабря 1895 года ";
+    private final String stringMpa = "Не заполнен рейтинг MPA";
 
     private final LocalDate MINDATE = LocalDate.of(1895, 12, 28);
     private final UserService userService;
@@ -85,15 +85,15 @@ public class FilmService extends AbstractService<Film, FilmStorage> {
 
     private void validateReleaseDate(LocalDate date) {
         if (date.isBefore(MINDATE)) {
-            log.warn(MSGERRDATE + date);
-            throw new InvalidFilmException(MSGERRDATE);
+            log.warn(dateRel + date);
+            throw new InvalidFilmException(dateRel);
         }
     }
 
     private void validateMpa(Rating mpa) {
         if (mpa == null) {
-            log.warn(MSGERRMPA);
-            throw new InvalidFilmException(MSGERRMPA);
+            log.warn(stringMpa);
+            throw new InvalidFilmException(stringMpa);
         }
     }
 
