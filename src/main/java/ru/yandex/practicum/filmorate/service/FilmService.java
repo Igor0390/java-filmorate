@@ -22,7 +22,7 @@ public class FilmService extends AbstractService<Film, FilmStorage> {
     private final String dateRel = "Дата релиза не раньше 28 декабря 1895 года ";
     private final String stringMpa = "Не заполнен рейтинг MPA";
 
-    private final LocalDate MINDATE = LocalDate.of(1895, 12, 28);
+    private final LocalDate minDate = LocalDate.of(1895, 12, 28);
     private final UserService userService;
     private final GenreStorage genreStorage;
 
@@ -84,7 +84,7 @@ public class FilmService extends AbstractService<Film, FilmStorage> {
     }
 
     private void validateReleaseDate(LocalDate date) {
-        if (date.isBefore(MINDATE)) {
+        if (date.isBefore(minDate)) {
             log.warn(dateRel + date);
             throw new InvalidFilmException(dateRel);
         }
