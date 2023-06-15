@@ -14,7 +14,7 @@ import java.util.Set;
 public class Film {
     @NonNull
     @NotNull
-    private int id;
+    private long id;
     @NonNull
     @NotBlank
     private String name;
@@ -28,17 +28,22 @@ public class Film {
     @NotNull
     @Positive
     private int duration;
+    private Mpa mpa;
 
-    private Set<Integer> likes = new HashSet<>();
+    private Set<Long> likes = new HashSet<>();
 
     private int likesCounter;
 
-    public void addLike(Integer id) {
+    public Film() {
+    }
+
+
+    public void addLike(Long id) {
         likes.add(id);
         likesCounter++;
     }
 
-    public void deleteLike(Integer id) {
+    public void deleteLike(Long id) {
         likes.remove(id);
         likesCounter--;
     }

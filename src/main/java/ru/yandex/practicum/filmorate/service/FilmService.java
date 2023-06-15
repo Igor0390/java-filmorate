@@ -22,11 +22,11 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         return filmStorage.getFilmById(id);
     }
 
-    public Film addLike(int filmId, int userId) {
+    public Film addLike(long filmId, long userId) {
         Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
         film.addLike(userId);
@@ -34,7 +34,7 @@ public class FilmService {
         return film;
     }
 
-    public Film deleteLike(int filmId, int userId) {
+    public Film deleteLike(long filmId, long userId) {
         Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
         film.deleteLike(userId);

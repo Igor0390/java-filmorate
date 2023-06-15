@@ -17,10 +17,10 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
-    private int id = 1;
+    private long id = 1;
     private final Map<Integer, Film> films = new HashMap<>();
 
-    private int generateId() {
+    private long generateId() {
         return id++;
     }
 
@@ -52,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(int id) {
+    public Film getFilmById(long id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {

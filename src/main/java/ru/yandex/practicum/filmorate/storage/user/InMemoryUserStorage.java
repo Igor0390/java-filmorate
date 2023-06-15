@@ -52,7 +52,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(int userId) {
+    public User getUserById(long userId) {
         if (users.containsKey(userId)) {
             return users.get(userId);
         } else {
