@@ -2,12 +2,14 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @Data
 public class User {
     @NotNull
@@ -29,13 +31,13 @@ public class User {
     public User() {
     }
 
-    private Set<Integer> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
 
-    public void addFriend(Integer id) {
+    public void addFriend(Long id) {
         friends.add(id);
     }
 
-    public void deleteFriend(Integer id) {
+    public void deleteFriend(Long id) {
         friends.remove(id);
     }
 

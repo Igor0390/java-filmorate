@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
+@RequiredArgsConstructor
 @Data
 public class Film {
     @NonNull
@@ -28,7 +29,6 @@ public class Film {
     @NotNull
     @Positive
     private int duration;
-    private Mpa mpa;
 
     private Set<Long> likes = new HashSet<>();
 

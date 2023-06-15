@@ -17,11 +17,11 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User getUserById(int id) {
+    public User getUserById(long id) {
         return userStorage.getUserById(id);
     }
 
-    public User addFriend(int userId, int friendId) {
+    public User addFriend(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.addFriend(friendId);
@@ -30,7 +30,7 @@ public class UserService {
         return user;
     }
 
-    public User deleteFriend(int userId, int friendId) {
+    public User deleteFriend(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         user.deleteFriend(friendId);
@@ -39,21 +39,21 @@ public class UserService {
         return user;
     }
 
-    public List<User> getFriends(int userId) {
+    public List<User> getFriends(long userId) {
         User user = userStorage.getUserById(userId);
         List<User> friendsList = new ArrayList<>();
-        for (Integer id : user.getFriends()) {
+        for (Long id : user.getFriends()) {
             friendsList.add(userStorage.getUserById(id));
         }
         log.info("Список друзей пользователя " + user.getName());
         return friendsList;
     }
 
-    public List<User> corporateFriends(int userId, int friendId) {
+    public List<User> corporateFriends(long userId, long friendId) {
         User user = userStorage.getUserById(userId);
         User friend = userStorage.getUserById(friendId);
         List<User> mutualFriends = new ArrayList<>();
-        for (Integer id : user.getFriends()) {
+        for (Long id : user.getFriends()) {
             if (friend.getFriends().contains(id)) {
                 User mutualFriend = userStorage.getUserById((id));
                 mutualFriends.add(mutualFriend);
