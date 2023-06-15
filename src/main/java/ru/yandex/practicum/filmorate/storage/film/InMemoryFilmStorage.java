@@ -18,7 +18,7 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate MIN_DATE = LocalDate.of(1895, 12, 28);
     private long id = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final Map<Long, Film> films = new HashMap<>();
 
     private long generateId() {
         return id++;
