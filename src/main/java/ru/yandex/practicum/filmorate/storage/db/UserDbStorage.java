@@ -56,7 +56,12 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(long userId) {
-        return null;
+        String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
+        List<User> result = jdbcTemplate.query(sql, this::mapToUser, userId);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
     }
 
     private User mapToUser(ResultSet resultSet, int rowNum) throws SQLException {
