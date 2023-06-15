@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Primary
 @Component
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -24,13 +26,13 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getAllFilms() {
         String sql = "SELECT f.FILM_ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.RATING_ID, r.NAME" +
-                " R_NAME \" +\n" + " \"FROM FILMS f JOIN RATINGS r ON f.RATING_ID = r.RATING_ID ORDER BY f.FILM_ID";
+                " R_NAME FROM FILMS f JOIN RATINGS r ON f.RATING_ID = r.RATING_ID ORDER BY f.FILM_ID";
         return jdbcTemplate.query(sql, this::mapToFilm);
     }
 
     @Override
     public Film addFilm(Film film) {
-        String sql = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION,RATING_ID)";
+        String sql = "INSERT INTO FILMS (NAME, DESCRIPTION, RELEASE_DATE, DURATION,RATING_ID) values(?,?,?,?,?)";
         GeneratedKeyHolder keyHolder;
         keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -39,7 +41,11 @@ public class FilmDbStorage implements FilmStorage {
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
             stmt.setLong(4, film.getDuration());
-            stmt.setLong(5, film.getMpa().getId());
+            if (film.getMpa() != null) {
+                stmt.setLong(5, film.getMpa().getId());
+            } else {
+                stmt.setLong(5, 0);
+            }
             return stmt;
         }, keyHolder);
         film.setId(keyHolder.getKey().longValue());

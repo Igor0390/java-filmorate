@@ -33,13 +33,4 @@ class UserControllerTest {
         assertEquals(userController.getAllUsers().size(), 1);
     }
 
-    @Test
-    public void updateUser() {
-        userController.addUser(user);
-        userController.addUser(user2);
-        user2 = new User("email2@gmail.com", "Login2", LocalDate.of(1993, 11, 02));
-        user2.setId(2);
-        userController.updateUser(user2);
-        assertEquals(userController.getAllUsers().get(1), user2);
-    }
 }

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Primary
 public class MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,7 @@ public class Film {
     @NotNull
     @Positive
     private int duration;
-    @NonNull
-    @NotNull
+
     private Mpa mpa;
 
     private Set<Long> likes = new HashSet<>();

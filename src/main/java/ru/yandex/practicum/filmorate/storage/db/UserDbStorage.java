@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -11,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Primary
+@Component
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
@@ -20,7 +24,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-        String sql = "INSERT INTO USERS (EMAIL, LOGIN, NAME, BIRTHDAY)";
+        String sql = "INSERT INTO USERS (EMAIL, LOGIN, NAME, BIRTHDAY) values(?,?,?,?)";
         GeneratedKeyHolder keyHolder;
         keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
