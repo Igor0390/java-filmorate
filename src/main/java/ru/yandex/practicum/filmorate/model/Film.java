@@ -1,45 +1,38 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
+import ru.yandex.practicum.filmorate.auxilary.IsAfter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
+
+import javax.validation.constraints.*;
 
 @Data
+@AllArgsConstructor
+@Builder
 public class Film {
-    @NonNull
-    @NotNull
-    private int id;
-    @NonNull
+    @Builder.Default
+    private int id = 1;
     @NotBlank
     private String name;
-    @NonNull
+    private List<Genre> genres;
     @NotBlank
+    @Size(max = 200)
     private String description;
-    @NonNull
     @NotNull
+    @IsAfter(current = "1895-12-28")
     private LocalDate releaseDate;
-    @NonNull
     @NotNull
-    @Positive
+    @Min(value = 0)
     private int duration;
+    @NotNull
+    private FilmRating mpa;
 
-    private Set<Integer> likes = new HashSet<>();
-
-    private int likesCounter;
-
-    public void addLike(Integer id) {
-        likes.add(id);
-        likesCounter++;
-    }
-
-    public void deleteLike(Integer id) {
-        likes.remove(id);
-        likesCounter--;
+    public void setMpa(FilmRating mpa) {
+        this.mpa = mpa;
     }
 }
